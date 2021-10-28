@@ -5,6 +5,7 @@ import (
 	"banking-auth/logger"
 	"encoding/json"
 	"github.com/golang-jwt/jwt"
+	"time"
 )
 
 type UserClaims struct {
@@ -25,7 +26,29 @@ func (claims UserClaims) IsRequestParamsVerifiedWithTokenClaims(params map[strin
 	if claims.CustomerId == params["customer_id"] && contains(claims.Accounts, account) {
 		return true
 	}
+
 	return false
+}
+
+func (claims UserClaims) HasTokenExpired() (bool, *exceptions.AppError) {
+	claimDate := time.Unix(int64(claims.Expiry), 0)
+	hour := int64(time.Hour.Minutes())
+	remaining := int64(time.Now().Sub(claimDate).Minutes())
+	if remaining > hour {
+		return true, exceptions.NewJwtError("Token has expired")
+	} else {
+		return false, nil
+	}
+
+	//var expireOffset = 3600
+	//if validity, ok := timestamp.(int64); ok {
+	//	tm := time.Unix(int64(validity), 0)
+	//	remainder := tm.Sub(time.Now())
+	//
+	//	if remainder > 0 {
+	//		return int(remainder.Seconds() + float64(expireOffset))
+	//	}
+	//}
 }
 
 func contains(accounts []string, account string) bool {

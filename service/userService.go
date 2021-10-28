@@ -75,7 +75,11 @@ func (defaultUserService DefaultUserService) Verify(params map[string]string) (b
 				if !b {
 					return b, exceptions.NewJwtError("Error bad request information ")
 				}
-
+				// check the token has not expired
+				expired, err := claims.HasTokenExpired()
+				if expired {
+					return expired, err
+				}
 			}
 			// now check the roles and permissions allow the operation
 			isAuthorised := defaultUserService.rolesPermissions.IsAuthorisedForRole(claims.Role, params["operation"])
