@@ -58,7 +58,7 @@ func (defaultUserService DefaultUserService) Verify(params map[string]string) (b
 	} else {
 		/* check that the token is valid for expiry and is a valid token*/
 		if jwtToken.Valid {
-			// cast the tokens claims to a  map
+			// cast the tokens claims to a  jwt.MapClaims
 			claimsMap := jwtToken.Claims.(jwt.MapClaims)
 			// convert the claims to a claims struct
 			var claims *domain.UserClaims
@@ -66,8 +66,8 @@ func (defaultUserService DefaultUserService) Verify(params map[string]string) (b
 			if err != nil {
 				return false, exceptions.NewJwtError("Unable to parse jwt claims")
 			}
-			/* check the role based access against the accounts and customerid on url
-			are matching the accounts and cutomerid in the token
+			/* check the role based access against the accounts and customerId on url
+			are matching the accounts and customerId in the token
 			*/
 			if claims.IsUserRole() {
 

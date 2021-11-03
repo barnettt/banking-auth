@@ -39,16 +39,6 @@ func (claims UserClaims) HasTokenExpired() (bool, *exceptions.AppError) {
 	} else {
 		return false, nil
 	}
-
-	//var expireOffset = 3600
-	//if validity, ok := timestamp.(int64); ok {
-	//	tm := time.Unix(int64(validity), 0)
-	//	remainder := tm.Sub(time.Now())
-	//
-	//	if remainder > 0 {
-	//		return int(remainder.Seconds() + float64(expireOffset))
-	//	}
-	//}
 }
 
 func contains(accounts []string, account string) bool {
