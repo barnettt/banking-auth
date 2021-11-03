@@ -18,7 +18,7 @@ type UserService interface {
 
 type DefaultUserService struct {
 	repository       domain.UserRepositoryDB
-	tokenService     domain.TokenService
+	tokenService     TokenService
 	rolesPermissions domain.RolePermissions
 }
 
@@ -95,7 +95,7 @@ func jwtTokenFromParams(tokenStr string) (*jwt.Token, *exceptions.AppError) {
 	logger.Info(tokenStr)
 	// parse the string into a jwt token using a token function to which the secret key must be returned
 	token, err := jwt.Parse(tokenStr, func(*jwt.Token) (interface{}, error) {
-		return []byte(domain.SECRET_WORD), nil
+		return []byte(SECRET_WORD), nil
 	})
 	if err != nil {
 		logger.Error("Error while parsing token")
@@ -105,7 +105,7 @@ func jwtTokenFromParams(tokenStr string) (*jwt.Token, *exceptions.AppError) {
 	return token, nil
 }
 
-func NewUserService(repo domain.UserRepositoryDB, tokenService domain.DefaultTokenService,
+func NewUserService(repo domain.UserRepositoryDB, tokenService DefaultTokenService,
 	rolesPermissions domain.RolePermissions) DefaultUserService {
 	return DefaultUserService{repository: repo, tokenService: tokenService, rolesPermissions: rolesPermissions}
 }

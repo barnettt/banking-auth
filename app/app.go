@@ -39,7 +39,7 @@ func StartApp() {
 
 	router := mux.NewRouter()
 	// Wiring app components
-	handler := UserHandler{service.NewUserService(domain.NewUserRepository(dbClient), domain.NewTokenService(), domain.GetUserRolePermissions())}
+	handler := UserHandler{service.NewUserService(domain.NewUserRepository(dbClient), service.NewTokenService(), domain.GetUserRolePermissions())}
 
 	// define all the routes
 

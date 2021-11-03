@@ -1,4 +1,4 @@
-package domain
+package service
 
 import (
 	"banking-auth/dto"
