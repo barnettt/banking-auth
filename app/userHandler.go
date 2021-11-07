@@ -60,7 +60,11 @@ func (userHandler *UserHandler) VerifyRequest(writer http.ResponseWriter, reques
 				return
 			}
 		}
+		writeResponse(writer, http.StatusOK, isAuthorised, contentType)
+	} else {
+		writeResponse(writer, http.StatusForbidden, exceptions.NewJwtError("missing jwt token"), contentType)
 	}
+
 }
 
 func getUserRequest(request *http.Request, contentType bool) (*dto.UserRequest, error) {
