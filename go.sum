@@ -1,3 +1,7 @@
+github.com/barnettt/banking-lib v1.0.0-banking-lib h1:hEVILCly5W220l8bDyx4DdFTp7iKP6lL3ndjwH69wR0=
+github.com/barnettt/banking-lib v1.0.0-banking-lib/go.mod h1:79baGFpFK3OMKDLnh0QyP2k6TWzf5STGknN3H8wiEeo=
+github.com/barnettt/banking-lib v1.0.1 h1:qcAj6MRD9W2p2d0g8a25N/kQFEi7M2PEdkE569Uf0ow=
+github.com/barnettt/banking-lib v1.0.1/go.mod h1:79baGFpFK3OMKDLnh0QyP2k6TWzf5STGknN3H8wiEeo=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
