@@ -3,6 +3,7 @@ module banking-auth
 go 1.16
 
 require (
+
 	github.com/barnettt/banking-lib v1.0.2 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
