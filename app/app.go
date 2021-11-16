@@ -2,9 +2,9 @@ package app
 
 import (
 	"banking-auth/domain"
-	"banking-auth/logger"
 	"banking-auth/service"
 	"fmt"
+	"github.com/barnettt/banking-lib/logger"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
@@ -39,12 +39,14 @@ func StartApp() {
 
 	router := mux.NewRouter()
 	// Wiring app components
-	handler := UserHandler{service.NewUserService(domain.NewUserRepository(dbClient), service.NewTokenService(), domain.GetUserRolePermissions())}
+	repo := domain.NewUserRepository(dbClient)
+	handler := UserHandler{service.NewUserService(repo, service.NewTokenService(repo), domain.GetUserRolePermissions())}
 
 	// define all the routes
 
 	router.HandleFunc("/customers/login", handler.GetUserByUserName).Methods(http.MethodPost)
 	router.HandleFunc("/auth/verify", handler.VerifyRequest).Methods(http.MethodGet)
+	router.HandleFunc("/auth/refresh", handler.Refresh).Methods(http.MethodPost)
 
 	// log any error to fatal
 	// print("starting listener ..... \n")

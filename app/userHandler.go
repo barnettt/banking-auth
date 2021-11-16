@@ -2,16 +2,16 @@ package app
 
 import (
 	"banking-auth/dto"
-	"banking-auth/exceptions"
-	"banking-auth/logger"
 	"banking-auth/service"
 	"encoding/json"
 	"encoding/xml"
+	"github.com/barnettt/banking-lib/exceptions"
+	"github.com/barnettt/banking-lib/logger"
 	"net/http"
 )
 
 type UserHandler struct {
-	userService service.DefaultUserService
+	userService service.DefaultAuthService
 }
 
 func (userHandler *UserHandler) GetUserByUserName(writer http.ResponseWriter, request *http.Request) {
@@ -26,12 +26,12 @@ func (userHandler *UserHandler) GetUserByUserName(writer http.ResponseWriter, re
 	if err != nil {
 		appErr := exceptions.NewPayloadParseError(err.Error())
 		returnResponse(writer, appErr, contentType,
-			dto.UserResponse{})
+			dto.LoginResponse{})
 	}
 	response, anErr := userHandler.userService.GetUserByUserName(*userReq)
 	if anErr != nil {
 		returnResponse(writer, anErr, contentType,
-			dto.UserResponse{})
+			dto.LoginResponse{})
 		return
 	}
 	returnResponse(writer, nil, contentType, *response)
@@ -60,11 +60,32 @@ func (userHandler *UserHandler) VerifyRequest(writer http.ResponseWriter, reques
 				return
 			}
 		}
-		writeResponse(writer, http.StatusOK, isAuthorised, contentType)
 	} else {
 		writeResponse(writer, http.StatusForbidden, exceptions.NewJwtError("missing jwt token"), contentType)
 	}
 
+}
+
+func (userHandler *UserHandler) Refresh(writer http.ResponseWriter, request *http.Request) {
+	contType := request.Header.Get("Content-Type")
+	var contentType bool
+	if contType == contentTypeXml {
+		contentType = true
+	}
+
+	refreshReq, err := getRefreshTokenRequest(request, contentType)
+	if err != nil {
+		appErr := exceptions.NewPayloadParseError(err.Error())
+		returnResponse(writer, appErr, contentType,
+			dto.LoginResponse{})
+	}
+	response, anErr := userHandler.userService.RefreshToken(*refreshReq)
+	if anErr != nil {
+		returnResponse(writer, anErr, contentType,
+			dto.LoginResponse{})
+		return
+	}
+	returnResponse(writer, nil, contentType, *response)
 }
 
 func getUserRequest(request *http.Request, contentType bool) (*dto.UserRequest, error) {
@@ -88,7 +109,28 @@ func getUserRequest(request *http.Request, contentType bool) (*dto.UserRequest, 
 	return userRequest, err
 }
 
-func returnResponse(writer http.ResponseWriter, error *exceptions.AppError, contentType bool, userResponse dto.UserResponse) {
+func getRefreshTokenRequest(request *http.Request, contentType bool) (*dto.RefreshTokenRequest, error) {
+	var refreshRequest *dto.RefreshTokenRequest
+	var err error
+	if contentType {
+
+		err = xml.NewDecoder(request.Body).Decode(&refreshRequest)
+		if err != nil {
+			logger.Error(err.Error())
+			return nil, err
+		}
+	} else {
+		err = json.NewDecoder(request.Body).Decode(&refreshRequest)
+		if err != nil {
+			logger.Error(err.Error())
+			return nil, err
+		}
+	}
+
+	return refreshRequest, err
+}
+
+func returnResponse(writer http.ResponseWriter, error *exceptions.AppError, contentType bool, userResponse dto.LoginResponse) {
 	if error != nil {
 		if contentType {
 			writeResponse(writer, error.Code, error.AsMessage(), contentTypeXml)
